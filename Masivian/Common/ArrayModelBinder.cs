@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationCore.Services
+namespace Common
 {
     public class ArrayModelBinder : IModelBinder
     {

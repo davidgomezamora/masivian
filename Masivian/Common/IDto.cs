@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ApplicationCore.Services
+namespace Common
 {
     public interface IDto
     {

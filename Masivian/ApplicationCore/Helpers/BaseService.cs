@@ -12,8 +12,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Common;
 
-namespace ApplicationCore.Services
+namespace ApplicationCore.Helpers
 {
     public class BaseService<TEntity, TDto, TAdditionDto, TUpdateDto, TSortingDto, TResourceParameters> : IBaseService<TDto, TAdditionDto, TUpdateDto, TSortingDto, TResourceParameters> where TEntity : class, new() where TDto : class, IDto where TAdditionDto : class where TUpdateDto : class, new() where TSortingDto : class where TResourceParameters : ServiceParameters
     {

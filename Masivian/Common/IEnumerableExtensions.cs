@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace ApplicationCore.Services
+namespace Common
 {
-    public static class ObjectExtensions
+    public static class IEnumerableExtensions
     {
-        public static ExpandoObject ShapeData<TSource>(this TSource source, string fields)
+        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> items, Func<T, TKey> property)
+        {
+            return items.GroupBy(property).Select(x => x.First());
+        }
+
+        public static IEnumerable<ExpandoObject> ShapeData<TSource>(this IEnumerable<TSource> source, string fields)
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
-            ExpandoObject expandoObject = new ExpandoObject();
+            // Create a list to hold our ExpandoObjects
+            List<ExpandoObject> expandoObjects = new List<ExpandoObject>();
 
             /* Create a list with PropertyInfo objects on TSource. Reflection is
              * expeensive, so rather than doing it for each object in the list, we do
@@ -26,8 +33,8 @@ namespace ApplicationCore.Services
 
             if (string.IsNullOrWhiteSpace(fields))
             {
-                // all public properties should be in the ExpandoObject 
-                PropertyInfo[] properties = typeof(TSource).GetProperties(BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                // all public properties should be in the ExpandoObject
+                PropertyInfo[] properties = typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
                 propertyInfos.AddRange(properties);
             }
@@ -60,20 +67,31 @@ namespace ApplicationCore.Services
                 }
             }
 
-            /* Get the value of each proeprty we have to return. For that,
-             * we run through the list
-             */
-            foreach (PropertyInfo propertyInfo in propertyInfos)
+            // run through the source object
+            foreach (TSource sourceObject in source)
             {
-                // GetValue returns the value of the property on the source object
-                object propertyValue = propertyInfo.GetValue(source);
+                /* Create an ExpandoObject that will hold the
+                 * selected properties & values
+                 */
+                ExpandoObject dataShapedObject = new ExpandoObject();
 
-                // Add the field to the ExpandoObject
-                ((IDictionary<string, object>)expandoObject).Add(propertyInfo.Name, propertyValue);
+                /* Get the value of each proeprty we have to return. For that,
+                 * we run through the list
+                 */
+                foreach (PropertyInfo propertyInfo in propertyInfos)
+                {
+                    // GetValue returns the value of the property on the source object
+                    object propertyValue = propertyInfo.GetValue(sourceObject);
+
+                    // Add the field to the ExpandoObject
+                    ((IDictionary<string, object>)dataShapedObject).Add(propertyInfo.Name, propertyValue);
+                }
+
+                // Add the ExpandoObject to the list
+                expandoObjects.Add(dataShapedObject);
             }
 
-            // return object
-            return expandoObject;
+            return expandoObjects;
         }
     }
 }

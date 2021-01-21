@@ -1,4 +1,5 @@
-﻿using Infraestructure.Repository;
+﻿using Common;
+using Infraestructure.Repository;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
@@ -7,7 +8,7 @@ using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationCore.Services
+namespace ApplicationCore.Helpers
 {
     public interface IBaseService<TDto, TAdditionDto, TUpdateDto, TSortingDto, TResourceParameters> where TDto : class, IDto where TAdditionDto : class where TUpdateDto : class, new() where TSortingDto : class where TResourceParameters : ServiceParameters
     {

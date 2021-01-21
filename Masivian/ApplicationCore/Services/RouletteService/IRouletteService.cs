@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.DTO.Roulette;
+using ApplicationCore.Helpers;
 using ApplicationCore.ResourceParameters;
 using System;
 using System.Collections.Generic;

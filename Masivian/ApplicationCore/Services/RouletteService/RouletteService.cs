@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.DTO.Roulette;
+using ApplicationCore.Helpers;
 using ApplicationCore.ResourceParameters;
 using AutoMapper;
 using Infraestructure.Entities;
