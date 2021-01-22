@@ -20,12 +20,13 @@ namespace Infraestructure.Context
 
         public virtual DbSet<Bet> Bets { get; set; }
         public virtual DbSet<Roulette> Roulettes { get; set; }
-        public virtual DbSet<State> States { get; set; }
+        public virtual DbSet<Status> Statuses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=masivian;User ID=dev;Password=D3v;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
@@ -38,25 +39,31 @@ namespace Infraestructure.Context
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                entity.HasOne(d => d.IdNavigation)
-                    .WithOne(p => p.Bet)
-                    .HasForeignKey<Bet>(d => d.Id)
+                entity.HasOne(d => d.Roulette)
+                    .WithMany(p => p.Bets)
+                    .HasForeignKey(d => d.RouletteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Bet_State");
+                    .HasConstraintName("FK__Bets__RouletteId__2E1BDC42");
+
+                entity.HasOne(d => d.State)
+                    .WithMany(p => p.Bets)
+                    .HasForeignKey(d => d.StateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Bets__StateId__2F10007B");
             });
 
             modelBuilder.Entity<Roulette>(entity =>
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                entity.HasOne(d => d.IdNavigation)
-                    .WithOne(p => p.Roulette)
-                    .HasForeignKey<Roulette>(d => d.Id)
+                entity.HasOne(d => d.State)
+                    .WithMany(p => p.Roulettes)
+                    .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Roulette_State");
+                    .HasConstraintName("FK__Roulettes__State__286302EC");
             });
 
-            modelBuilder.Entity<State>(entity =>
+            modelBuilder.Entity<Status>(entity =>
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 

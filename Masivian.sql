@@ -1,143 +1,29 @@
-USE [master]
-GO
-/****** Object:  Database [masivian]    Script Date: 21/01/2021 13:34:18 ******/
-CREATE DATABASE [masivian] ON  PRIMARY 
-( NAME = N'masivian', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\masivian.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'masivian_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\masivian_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
-GO
-ALTER DATABASE [masivian] SET COMPATIBILITY_LEVEL = 100
-GO
-IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
-begin
-EXEC [masivian].[dbo].[sp_fulltext_database] @action = 'enable'
-end
-GO
-ALTER DATABASE [masivian] SET ANSI_NULL_DEFAULT OFF 
-GO
-ALTER DATABASE [masivian] SET ANSI_NULLS OFF 
-GO
-ALTER DATABASE [masivian] SET ANSI_PADDING OFF 
-GO
-ALTER DATABASE [masivian] SET ANSI_WARNINGS OFF 
-GO
-ALTER DATABASE [masivian] SET ARITHABORT OFF 
-GO
-ALTER DATABASE [masivian] SET AUTO_CLOSE OFF 
-GO
-ALTER DATABASE [masivian] SET AUTO_SHRINK OFF 
-GO
-ALTER DATABASE [masivian] SET AUTO_UPDATE_STATISTICS ON 
-GO
-ALTER DATABASE [masivian] SET CURSOR_CLOSE_ON_COMMIT OFF 
-GO
-ALTER DATABASE [masivian] SET CURSOR_DEFAULT  GLOBAL 
-GO
-ALTER DATABASE [masivian] SET CONCAT_NULL_YIELDS_NULL OFF 
-GO
-ALTER DATABASE [masivian] SET NUMERIC_ROUNDABORT OFF 
-GO
-ALTER DATABASE [masivian] SET QUOTED_IDENTIFIER OFF 
-GO
-ALTER DATABASE [masivian] SET RECURSIVE_TRIGGERS OFF 
-GO
-ALTER DATABASE [masivian] SET  DISABLE_BROKER 
-GO
-ALTER DATABASE [masivian] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
-GO
-ALTER DATABASE [masivian] SET DATE_CORRELATION_OPTIMIZATION OFF 
-GO
-ALTER DATABASE [masivian] SET TRUSTWORTHY OFF 
-GO
-ALTER DATABASE [masivian] SET ALLOW_SNAPSHOT_ISOLATION OFF 
-GO
-ALTER DATABASE [masivian] SET PARAMETERIZATION SIMPLE 
-GO
-ALTER DATABASE [masivian] SET READ_COMMITTED_SNAPSHOT OFF 
-GO
-ALTER DATABASE [masivian] SET HONOR_BROKER_PRIORITY OFF 
-GO
-ALTER DATABASE [masivian] SET RECOVERY FULL 
-GO
-ALTER DATABASE [masivian] SET  MULTI_USER 
-GO
-ALTER DATABASE [masivian] SET PAGE_VERIFY CHECKSUM  
-GO
-ALTER DATABASE [masivian] SET DB_CHAINING OFF 
-GO
-EXEC sys.sp_db_vardecimal_storage_format N'masivian', N'ON'
-GO
-USE [masivian]
-GO
-/****** Object:  Table [dbo].[Bet]    Script Date: 21/01/2021 13:34:18 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Bet](
-	[Id] [uniqueidentifier] NOT NULL,
-	[Money] [money] NOT NULL,
-	[UserId] [uniqueidentifier] NOT NULL,
-	[Date] [datetime] NOT NULL,
-	[StateId] [uniqueidentifier] NOT NULL,
-	[Number] [int] NULL,
-	[Color] [bit] NULL,
- CONSTRAINT [PK_Bet] PRIMARY KEY CLUSTERED 
+Create Database Masivian
+Go
+
+Use Masivian
+Go
+
+Create Table [Status]
 (
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Roulette]    Script Date: 21/01/2021 13:34:18 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Roulette](
-	[Id] [uniqueidentifier] NOT NULL,
-	[Date] [datetime] NOT NULL,
-	[StateId] [uniqueidentifier] NOT NULL,
- CONSTRAINT [PK_Roulette] PRIMARY KEY CLUSTERED 
+	ID uniqueidentifier primary key default newid(),
+	Name varchar(10)
+)
+
+Create Table [Roulettes]
 (
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[State]    Script Date: 21/01/2021 13:34:18 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[State](
-	[Id] [uniqueidentifier] NOT NULL,
-	[Name] [varchar](10) NOT NULL,
- CONSTRAINT [PK_State] PRIMARY KEY CLUSTERED 
+	ID uniqueidentifier primary key default newid(),
+	StateId uniqueidentifier not null foreign key references [Status](ID)
+)
+
+Create Table [Bets]
 (
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-INSERT [dbo].[State] ([Id], [Name]) VALUES (N'1fbea792-81f8-46d7-88c9-0ce382c45db8', N'Open')
-GO
-INSERT [dbo].[State] ([Id], [Name]) VALUES (N'b8d10a28-da6c-4d05-9d2b-163a38665c21', N'Close')
-GO
-ALTER TABLE [dbo].[Bet] ADD  CONSTRAINT [DF_Bet_Id]  DEFAULT (newid()) FOR [Id]
-GO
-ALTER TABLE [dbo].[Roulette] ADD  CONSTRAINT [DF_Roulette_Id]  DEFAULT (newid()) FOR [Id]
-GO
-ALTER TABLE [dbo].[State] ADD  CONSTRAINT [DF_State_Id]  DEFAULT (newid()) FOR [Id]
-GO
-ALTER TABLE [dbo].[Bet]  WITH CHECK ADD  CONSTRAINT [FK_Bet_State] FOREIGN KEY([Id])
-REFERENCES [dbo].[State] ([Id])
-GO
-ALTER TABLE [dbo].[Bet] CHECK CONSTRAINT [FK_Bet_State]
-GO
-ALTER TABLE [dbo].[Roulette]  WITH CHECK ADD  CONSTRAINT [FK_Roulette_State] FOREIGN KEY([Id])
-REFERENCES [dbo].[State] ([Id])
-GO
-ALTER TABLE [dbo].[Roulette] CHECK CONSTRAINT [FK_Roulette_State]
-GO
-USE [master]
-GO
-ALTER DATABASE [masivian] SET  READ_WRITE 
-GO
+	ID uniqueidentifier primary key default newid(),
+	[Money] int not null,
+	constraint Money_Ck check ([Money] between 1 and 10000),
+	UserId uniqueidentifier not null,
+	Prize int,
+	constraint Prize_Ck check (Prize between 0 and 50000),
+	RouletteId uniqueidentifier not null foreign key references Roulettes(ID),
+	StateId uniqueidentifier not null foreign key references [Status](ID)
+)

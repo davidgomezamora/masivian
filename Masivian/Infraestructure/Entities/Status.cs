@@ -8,22 +8,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Entities
 {
-    public partial class Roulette
+    [Table("Status")]
+    public partial class Status
     {
-        public Roulette()
+        public Status()
         {
             Bets = new HashSet<Bet>();
+            Roulettes = new HashSet<Roulette>();
         }
 
         [Key]
         [Column("ID")]
         public Guid Id { get; set; }
-        public Guid StateId { get; set; }
+        [StringLength(10)]
+        public string Name { get; set; }
 
-        [ForeignKey(nameof(StateId))]
-        [InverseProperty(nameof(Status.Roulettes))]
-        public virtual Status State { get; set; }
-        [InverseProperty(nameof(Bet.Roulette))]
+        [InverseProperty(nameof(Bet.State))]
         public virtual ICollection<Bet> Bets { get; set; }
+        [InverseProperty(nameof(Roulette.State))]
+        public virtual ICollection<Roulette> Roulettes { get; set; }
     }
 }

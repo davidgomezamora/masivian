@@ -6,5 +6,6 @@ namespace ApplicationCore.DTO.Roulette
 {
     public class RouletteForManipulationDto
     {
+        public virtual Guid StateId { get; set; }
     }
 }

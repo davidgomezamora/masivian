@@ -6,9 +6,12 @@ using System.Text;
 
 namespace ApplicationCore.ResourceParameters
 {
-    public class RouletteResourceParameters : ServiceParameters
+    public class BetResourceParameters : ServiceParameters
     {
-        public RouletteResourceParameters()
+        public int? Money { get; set; }
+        public int? Prize { get; set; }
+
+        public BetResourceParameters()
         {
             this.OrderBy = "id";
         }

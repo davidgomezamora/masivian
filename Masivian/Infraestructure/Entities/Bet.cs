@@ -8,20 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Entities
 {
-    [Table("Bet")]
     public partial class Bet
     {
         [Key]
+        [Column("ID")]
         public Guid Id { get; set; }
-        [Column(TypeName = "money")]
-        public decimal Money { get; set; }
+        public int Money { get; set; }
         public Guid UserId { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime Date { get; set; }
+        public int? Prize { get; set; }
+        public Guid RouletteId { get; set; }
         public Guid StateId { get; set; }
 
-        [ForeignKey(nameof(Id))]
-        [InverseProperty(nameof(State.Bet))]
-        public virtual State IdNavigation { get; set; }
+        [ForeignKey(nameof(RouletteId))]
+        [InverseProperty("Bets")]
+        public virtual Roulette Roulette { get; set; }
+        [ForeignKey(nameof(StateId))]
+        [InverseProperty(nameof(Status.Bets))]
+        public virtual Status State { get; set; }
     }
 }

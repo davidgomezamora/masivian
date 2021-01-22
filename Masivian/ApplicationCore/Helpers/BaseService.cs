@@ -18,6 +18,7 @@ namespace ApplicationCore.Helpers
 {
     public class BaseService<TEntity, TDto, TAdditionDto, TUpdateDto, TSortingDto, TResourceParameters> : IBaseService<TDto, TAdditionDto, TUpdateDto, TSortingDto, TResourceParameters> where TEntity : class, new() where TDto : class, IDto where TAdditionDto : class where TUpdateDto : class, new() where TSortingDto : class where TResourceParameters : ServiceParameters
     {
+        public List<string> PathRelatedEntities { get; set; } = null;
         public IRepository<TEntity> Repository { get; set; }
         public IMapper Mapper { get; set; }
 
@@ -70,6 +71,11 @@ namespace ApplicationCore.Helpers
         // Get all the records from the table, according to the parameters
         public virtual async Task<PagedList<ExpandoObject>> GetAsync(ServiceParameters parameters, List<string> pathRelatedEntities = null)
         {
+            if (pathRelatedEntities is null || pathRelatedEntities.Count.Equals(0))
+            {
+                pathRelatedEntities = this.PathRelatedEntities;
+            }
+
             QueryParameters<TEntity> queryParameters = new QueryParameters<TEntity>()
             {
                 PageSize = parameters.PageSize,
@@ -89,6 +95,11 @@ namespace ApplicationCore.Helpers
         // Get all the records of the table and related tables, according to the parameters
         public virtual async Task<PagedList<ExpandoObject>> GetAsync(TResourceParameters resourceParameters, List<string> pathRelatedEntities = null)
         {
+            if (pathRelatedEntities is null || pathRelatedEntities.Count.Equals(0))
+            {
+                pathRelatedEntities = this.PathRelatedEntities;
+            }
+
             this.BuildSearchQueryFilter(resourceParameters, out QueryParameters<TEntity> queryParameters);
 
             queryParameters.PageSize = resourceParameters.PageSize;
@@ -107,6 +118,11 @@ namespace ApplicationCore.Helpers
         // Get records from the table, based on the value of one or more primary keys
         public virtual async Task<List<ExpandoObject>> GetAsync(List<object> ids, string fields, List<string> pathRelatedEntities = null)
         {
+            if (pathRelatedEntities is null || pathRelatedEntities.Count.Equals(0))
+            {
+                pathRelatedEntities = this.PathRelatedEntities;
+            }
+
             List<ExpandoObject> expandoObjects = new List<ExpandoObject>();
 
             foreach (object id in ids)
@@ -125,6 +141,11 @@ namespace ApplicationCore.Helpers
         // Get records from the table, based on the value of one or more composite primary keys
         public virtual async Task<List<ExpandoObject>> GetAsync(List<object[]> ids, string fields, List<string> pathRelatedEntities = null)
         {
+            if (pathRelatedEntities is null || pathRelatedEntities.Count.Equals(0))
+            {
+                pathRelatedEntities = this.PathRelatedEntities;
+            }
+
             List<ExpandoObject> expandoObjects = new List<ExpandoObject>();
 
             foreach (object[] id in ids)
@@ -143,6 +164,11 @@ namespace ApplicationCore.Helpers
         // Get a record from the table, based on the value of the composite or simple primary key
         public virtual async Task<ExpandoObject> GetAsync(string fields, List<string> pathRelatedEntities = null, params object[] ids)
         {
+            if (pathRelatedEntities is null || pathRelatedEntities.Count.Equals(0))
+            {
+                pathRelatedEntities = this.PathRelatedEntities;
+            }
+
             TEntity entity = await this.Repository.GetAsync(pathRelatedEntities, ids);
 
             if (entity != null)
@@ -156,6 +182,11 @@ namespace ApplicationCore.Helpers
         // 
         public virtual async Task<List<ExpandoObject>> GetListAsync(TResourceParameters resourceParameters, List<string> pathRelatedEntities = null)
         {
+            if (pathRelatedEntities is null || pathRelatedEntities.Count.Equals(0))
+            {
+                pathRelatedEntities = this.PathRelatedEntities;
+            }
+
             this.BuildSearchQueryFilter(resourceParameters, out QueryParameters<TEntity> queryParameters);
 
             queryParameters.OrderByString = resourceParameters.OrderBy;
