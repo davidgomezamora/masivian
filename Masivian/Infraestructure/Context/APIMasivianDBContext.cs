@@ -43,13 +43,13 @@ namespace Infraestructure.Context
                     .WithMany(p => p.Bets)
                     .HasForeignKey(d => d.RouletteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Bets__RouletteId__2E1BDC42");
+                    .HasConstraintName("FK__Bets__RouletteId__300424B4");
 
                 entity.HasOne(d => d.State)
                     .WithMany(p => p.Bets)
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Bets__StateId__2F10007B");
+                    .HasConstraintName("FK__Bets__StateId__30F848ED");
             });
 
             modelBuilder.Entity<Roulette>(entity =>

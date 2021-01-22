@@ -13,9 +13,12 @@ namespace Infraestructure.Entities
         [Key]
         [Column("ID")]
         public Guid Id { get; set; }
-        public int Money { get; set; }
+        public int Number { get; set; }
+        public bool IsColor { get; set; }
+        public double Money { get; set; }
         public Guid UserId { get; set; }
-        public int? Prize { get; set; }
+        public double? Prize { get; set; }
+        public int? RouletteNumber { get; set; }
         public Guid RouletteId { get; set; }
         public Guid StateId { get; set; }
 

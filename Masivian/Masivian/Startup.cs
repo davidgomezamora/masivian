@@ -105,6 +105,7 @@ namespace Masivian
 
             // Sets the database context and defines the connection string set in the appsettings.json file
             services.AddDbContext<APIMasivianDBContext>(options => {
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 // ConnectionsString > ConnectionDatabase
                 options.UseSqlServer(this.Configuration.GetConnectionString("ConnectionDatabase"));
             });

@@ -15,11 +15,11 @@ namespace Masivian.Controllers
     [ApiVersion("1.0")]
     [ApiVersion("0.5", Deprecated = true)]
     [Route("api/[controller]")]
-    public class RouletteController : BaseController
+    public class RoulettesController : BaseController
     {
         private readonly IRouletteService _rouletteService;
 
-        public RouletteController(IRouletteService rouletteService)
+        public RoulettesController(IRouletteService rouletteService)
         {
             this._rouletteService = rouletteService ??
                 throw new ArgumentNullException(nameof(rouletteService));
@@ -109,29 +109,12 @@ namespace Masivian.Controllers
             return CreatedAtRoute("GetRouletteAsync", new { Id = dto.GetId() }, dto);
         }
 
-        [HttpPatch("{id}/open", Name = "OpenRouletteAsync")]
-        public async Task<ActionResult> OpenAsync(Guid Id)
+        [HttpPatch("{id}/switchstate", Name = "SwitchStateRouletteAsync")]
+        public async Task<ActionResult> SwitchStateAsync(Guid Id)
         {
             if (await this._rouletteService.ExistsAsync(Id))
             {
-                if (await this._rouletteService.Open(Id))
-                {
-                    return NoContent();
-                }
-
-                // 304 (Not Modified)
-                return StatusCode(304);
-            }
-
-            return NotFound();
-        }
-
-        [HttpPatch("{id}/close", Name = "CloseRouletteAsync")]
-        public async Task<ActionResult> CloseAsync(Guid Id)
-        {
-            if (await this._rouletteService.ExistsAsync(Id))
-            {
-                if (await this._rouletteService.Close(Id))
+                if (await this._rouletteService.SwitchStateAsync(Id))
                 {
                     return NoContent();
                 }

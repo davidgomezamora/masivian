@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.DTO.Bet;
 using ApplicationCore.ResourceParameters;
 using ApplicationCore.Services.BetService;
+using ApplicationCore.Services.RouletteService;
 using Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Masivian.Controllers
@@ -15,12 +17,16 @@ namespace Masivian.Controllers
     [ApiVersion("1.0")]
     [ApiVersion("0.5", Deprecated = true)]
     [Route("api/[controller]")]
-    public class BetController : BaseController
+    public class BetsController : BaseController
     {
-        private readonly IBetService _rouletteService;
+        private readonly IBetService _betService;
+        private readonly IRouletteService _rouletteService;
 
-        public BetController(IBetService rouletteService)
+        public BetsController(IBetService betService, IRouletteService rouletteService)
         {
+            this._betService = betService ??
+                throw new ArgumentNullException(nameof(betService));
+
             this._rouletteService = rouletteService ??
                 throw new ArgumentNullException(nameof(rouletteService));
         }
@@ -28,12 +34,12 @@ namespace Masivian.Controllers
         [HttpGet(Name = "GetBetsPagedListAsync")]
         public async Task<ActionResult<PagedList<ExpandoObject>>> GetPagedListAsync([FromQuery] BetResourceParameters resourceParameters)
         {
-            if (!this._rouletteService.ValidateOrderByString(resourceParameters.OrderBy) || !this._rouletteService.ValidateFields(resourceParameters.Fields))
+            if (!this._betService.ValidateOrderByString(resourceParameters.OrderBy) || !this._betService.ValidateFields(resourceParameters.Fields))
             {
                 return BadRequest();
             }
 
-            PagedList<ExpandoObject> pagedList = await this._rouletteService.GetAsync(resourceParameters);
+            PagedList<ExpandoObject> pagedList = await this._betService.GetAsync(resourceParameters);
 
             if (!pagedList.Results.Any())
             {
@@ -56,12 +62,12 @@ namespace Masivian.Controllers
         [HttpGet("list", Name = "GetBetsAsync")]
         public async Task<ActionResult<List<ExpandoObject>>> GetListAsync([FromQuery] BetResourceParameters resourceParameters)
         {
-            if (!this._rouletteService.ValidateOrderByString(resourceParameters.OrderBy) || !this._rouletteService.ValidateFields(resourceParameters.Fields))
+            if (!this._betService.ValidateOrderByString(resourceParameters.OrderBy) || !this._betService.ValidateFields(resourceParameters.Fields))
             {
                 return BadRequest();
             }
 
-            List<ExpandoObject> expandoObjects = await this._rouletteService.GetListAsync(resourceParameters);
+            List<ExpandoObject> expandoObjects = await this._betService.GetListAsync(resourceParameters);
 
             if (!expandoObjects.Any())
             {
@@ -74,12 +80,12 @@ namespace Masivian.Controllers
         [HttpGet("{id}", Name = "GetBetAsync")]
         public async Task<ActionResult<ExpandoObject>> GetAsync(Guid id, string fields)
         {
-            if (!this._rouletteService.ValidateFields(fields))
+            if (!this._betService.ValidateFields(fields))
             {
                 return BadRequest();
             }
 
-            ExpandoObject expandoObject = await this._rouletteService.GetAsync(fields, null, id);
+            ExpandoObject expandoObject = await this._betService.GetAsync(fields, null, id);
 
             if (expandoObject is null)
             {
@@ -97,9 +103,17 @@ namespace Masivian.Controllers
         }
 
         [HttpPost(Name = "AddBetAsync")]
-        public async Task<ActionResult<BetDto>> AddAsync()
+        public async Task<ActionResult<BetDto>> AddAsync([FromHeader] Guid userId, [FromBody] BetForAdditionDto additionDto)
         {
-            BetDto dto = await this._rouletteService.AddAsync(new BetForAdditionDto());
+            // Verify that the roulette exists and is open
+            if (!await this._rouletteService.ValidateAsync(additionDto.RouletteId))
+            {
+                return BadRequest();
+            }
+
+            additionDto.UserId = userId;
+
+            BetDto dto = await this._betService.AddAsync(additionDto);
 
             if (dto is null)
             {

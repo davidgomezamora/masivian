@@ -31,6 +31,5 @@ namespace ApplicationCore.Helpers
         Task<TDto> UpsertingAsync(object id, JsonPatchDocument<TUpdateDto> jsonPatchDocument, ModelStateDictionary modelStateDictionary);
         bool ValidateFields(string fields);
         bool ValidateOrderByString(string orderBy);
-        void BuildSearchQueryFilter<TEntity>(TResourceParameters parameters, out QueryParameters<TEntity> queryParameters) where TEntity : class, new();
     }
 }

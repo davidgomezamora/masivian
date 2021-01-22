@@ -453,9 +453,9 @@ namespace ApplicationCore.Helpers
             return true;
         }
 
-        public virtual void BuildSearchQueryFilter<TEntity2>(TResourceParameters parameters, out QueryParameters<TEntity2> queryParameters) where TEntity2 : class, new()
+        public virtual void BuildSearchQueryFilter(TResourceParameters parameters, out QueryParameters<TEntity> queryParameters)
         {
-            queryParameters = new QueryParameters<TEntity2>();
+            queryParameters = new QueryParameters<TEntity>();
         }
     }
 }

@@ -21,8 +21,14 @@ namespace ApplicationCore.MapperProfile
             CreateMap<BetForSortingDto, Bet>()
                 .ForMember(dest => dest.Id,
                 opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Number,
+                opt => opt.MapFrom(src => src.Number))
+                .ForMember(dest => dest.IsColor,
+                opt => opt.MapFrom(src => src.IsColor))
                 .ForMember(dest => dest.Money,
                 opt => opt.MapFrom(src => src.Money))
+                .ForMember(dest => dest.RouletteNumber,
+                opt => opt.MapFrom(src => src.RouletteNumber))
                 .ForMember(dest => dest.Prize,
                 opt => opt.MapFrom(src => src.Prize))
                 .ForAllOtherMembers(opt => opt.Ignore());

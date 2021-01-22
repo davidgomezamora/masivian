@@ -8,8 +8,10 @@ namespace ApplicationCore.ResourceParameters
 {
     public class BetResourceParameters : ServiceParameters
     {
-        public int? Money { get; set; }
-        public int? Prize { get; set; }
+        public double? Money { get; set; }
+        public double? Prize { get; set; }
+        public bool? IsColor { get; set; }
+        public int? RouletteNumber { get; set; }
 
         public BetResourceParameters()
         {
