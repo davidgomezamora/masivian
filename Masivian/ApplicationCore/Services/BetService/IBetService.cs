@@ -10,6 +10,5 @@ namespace ApplicationCore.Services.BetService
 {
     public interface IBetService : IBaseService<BetDto, BetForAdditionDto, BetForUpdateDto, BetForSortingDto, BetResourceParameters> {
 
-        public Task<bool> Close(Guid id);
     }
 }

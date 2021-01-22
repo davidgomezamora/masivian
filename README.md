@@ -59,7 +59,7 @@ Practice test for the role as backend developer.
 > - The 'To list' and 'Pagination list' endpoints are capable of filtering. (Only for 'Bet' endpoints)
 
 ### Roulette [Creation]
-To create a roulette, it is only necessary to make the HTTP request with the verb 'POST'; by default the status 'open' is assigned
+To create a roulette, it is only necessary to make the HTTP request with the verb 'POST'; by default the status 'close' is assigned
 
 | HTTP verb | URL |
 | - | - |
@@ -99,11 +99,12 @@ To consult a roulette in specific, it is only necessary to make the HTTP request
 
 - **Expected response** => 200 Ok
 
-### Roulette [Closing]
-To close a roulette, it is only necessary to make the HTTP request with the verb 'PATCH'. Bear in mind that there is no way to re-open a closed roulette.
+### Roulette [Close and Open]
+To close and open a roulette, it is only necessary to make the HTTP request with the verb 'PATCH'.
 
 | HTTP verb | URL |
 | - | - |
+| PATCH | https://localhost:44322/api/roulettes/{GUID}/open |
 | PATCH | https://localhost:44322/api/roulettes/{GUID}/close |
 
 - **Expected response** => 204 Not Content

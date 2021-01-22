@@ -1,6 +1,6 @@
-﻿using ApplicationCore.DTO.Roulette;
+﻿using ApplicationCore.DTO.Bet;
 using ApplicationCore.ResourceParameters;
-using ApplicationCore.Services.RouletteService;
+using ApplicationCore.Services.BetService;
 using Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,18 +15,18 @@ namespace Masivian.Controllers
     [ApiVersion("1.0")]
     [ApiVersion("0.5", Deprecated = true)]
     [Route("api/[controller]")]
-    public class RouletteController : BaseController
+    public class BetController : BaseController
     {
-        private readonly IRouletteService _rouletteService;
+        private readonly IBetService _rouletteService;
 
-        public RouletteController(IRouletteService rouletteService)
+        public BetController(IBetService rouletteService)
         {
             this._rouletteService = rouletteService ??
                 throw new ArgumentNullException(nameof(rouletteService));
         }
 
-        [HttpGet(Name = "GetRoulettesPagedListAsync")]
-        public async Task<ActionResult<PagedList<ExpandoObject>>> GetPagedListAsync([FromQuery] RouletteResourceParameters resourceParameters)
+        [HttpGet(Name = "GetBetsPagedListAsync")]
+        public async Task<ActionResult<PagedList<ExpandoObject>>> GetPagedListAsync([FromQuery] BetResourceParameters resourceParameters)
         {
             if (!this._rouletteService.ValidateOrderByString(resourceParameters.OrderBy) || !this._rouletteService.ValidateFields(resourceParameters.Fields))
             {
@@ -42,19 +42,19 @@ namespace Masivian.Controllers
 
             if (pagedList.HasPrevious)
             {
-                pagedList.PreviousPageLink = CreateResourceUri(resourceParameters, ResourceUriTypeEnum.PreviousPage, "GetRoulettesPagedListAsync");
+                pagedList.PreviousPageLink = CreateResourceUri(resourceParameters, ResourceUriTypeEnum.PreviousPage, "GetBetsPagedListAsync");
             }
 
             if (pagedList.HasNext)
             {
-                pagedList.NextPageLink = CreateResourceUri(resourceParameters, ResourceUriTypeEnum.NextPage, "GetRoulettesPagedListAsync");
+                pagedList.NextPageLink = CreateResourceUri(resourceParameters, ResourceUriTypeEnum.NextPage, "GetBetsPagedListAsync");
             }
 
             return Ok(pagedList);
         }
 
-        [HttpGet("list", Name = "GetRoulettesAsync")]
-        public async Task<ActionResult<List<ExpandoObject>>> GetListAsync([FromQuery] RouletteResourceParameters resourceParameters)
+        [HttpGet("list", Name = "GetBetsAsync")]
+        public async Task<ActionResult<List<ExpandoObject>>> GetListAsync([FromQuery] BetResourceParameters resourceParameters)
         {
             if (!this._rouletteService.ValidateOrderByString(resourceParameters.OrderBy) || !this._rouletteService.ValidateFields(resourceParameters.Fields))
             {
@@ -71,7 +71,7 @@ namespace Masivian.Controllers
             return Ok(expandoObjects);
         }
 
-        [HttpGet("{id}", Name = "GetRouletteAsync")]
+        [HttpGet("{id}", Name = "GetBetAsync")]
         public async Task<ActionResult<ExpandoObject>> GetAsync(Guid id, string fields)
         {
             if (!this._rouletteService.ValidateFields(fields))
@@ -87,7 +87,7 @@ namespace Masivian.Controllers
             }
 
             List<LinkDto> linkDtos = new List<LinkDto>();
-            linkDtos.Add(new LinkDto(Url.Link("GetRouletteAsync", new { id }), "partially_update", "PATCH"));
+            linkDtos.Add(new LinkDto(Url.Link("GetBetAsync", new { id }), "partially_update", "PATCH"));
 
             IDictionary<string, object> linkedResource = expandoObject;
 
@@ -96,51 +96,17 @@ namespace Masivian.Controllers
             return Ok((ExpandoObject)linkedResource);
         }
 
-        [HttpPost(Name = "AddRouletteAsync")]
-        public async Task<ActionResult<RouletteDto>> AddAsync()
+        [HttpPost(Name = "AddBetAsync")]
+        public async Task<ActionResult<BetDto>> AddAsync()
         {
-            RouletteDto dto = await this._rouletteService.AddAsync(new RouletteForAdditionDto());
+            BetDto dto = await this._rouletteService.AddAsync(new BetForAdditionDto());
 
             if (dto is null)
             {
                 return NotFound();
             }
 
-            return CreatedAtRoute("GetRouletteAsync", new { Id = dto.GetId() }, dto);
-        }
-
-        [HttpPatch("{id}/open", Name = "OpenRouletteAsync")]
-        public async Task<ActionResult> OpenAsync(Guid Id)
-        {
-            if (await this._rouletteService.ExistsAsync(Id))
-            {
-                if (await this._rouletteService.Open(Id))
-                {
-                    return NoContent();
-                }
-
-                // 304 (Not Modified)
-                return StatusCode(304);
-            }
-
-            return NotFound();
-        }
-
-        [HttpPatch("{id}/close", Name = "CloseRouletteAsync")]
-        public async Task<ActionResult> CloseAsync(Guid Id)
-        {
-            if (await this._rouletteService.ExistsAsync(Id))
-            {
-                if (await this._rouletteService.Close(Id))
-                {
-                    return NoContent();
-                }
-
-                // 304 (Not Modified)
-                return StatusCode(304);
-            }
-
-            return NotFound();
+            return CreatedAtRoute("GetBetAsync", new { Id = dto.GetId() }, dto);
         }
     }
 }

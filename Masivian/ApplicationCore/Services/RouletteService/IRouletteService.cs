@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ApplicationCore.Services.RouletteService
 {
     public interface IRouletteService : IBaseService<RouletteDto, RouletteForAdditionDto, RouletteForUpdateDto, RouletteForSortingDto, RouletteResourceParameters> {
-
+        public Task<bool> Open(Guid id);
         public Task<bool> Close(Guid id);
     }
 }

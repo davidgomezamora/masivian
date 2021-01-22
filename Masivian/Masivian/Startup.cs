@@ -1,3 +1,4 @@
+using ApplicationCore.Services.BetService;
 using ApplicationCore.Services.RouletteService;
 using AutoMapper;
 using Infraestructure.Context;
@@ -128,6 +129,7 @@ namespace Masivian
              * Application Core Layer Services
              */
             services.AddScoped(typeof(IRouletteService), typeof(RouletteService));
+            services.AddScoped(typeof(IBetService), typeof(BetService));
 
             /*
              * ---------------------------------------------------------

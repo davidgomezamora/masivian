@@ -17,5 +17,10 @@ namespace ApplicationCore.DTO.Bet
         public virtual Guid StateId { get; set; }
         public virtual RouletteDto Roulette { get; set; }
         public virtual StateDto State { get; set; }
+
+        public object GetId()
+        {
+            return this.Id;
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace Infraestructure.Entities
         [Key]
         [Column("ID")]
         public Guid Id { get; set; }
+        public bool IsOpen { get; set; }
         [StringLength(10)]
         public string Name { get; set; }
 

@@ -18,10 +18,5 @@ namespace ApplicationCore.Services.BetService
         public BetService(IRepository<Bet> repository, IMapper mapper) : base(repository, mapper) {
             this.PathRelatedEntities = new List<string> { "State", "Roulette" };
         }
-
-        public async Task<bool> Close(Guid id)
-        {
-            return await this.UpdateAsync(id, new BetForUpdateDto() { StateId = new Guid("D38D2437-92B8-4C0C-BDE3-8C1029403F03") });
-        }
     }
 }

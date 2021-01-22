@@ -7,7 +7,8 @@ Go
 Create Table [Status]
 (
 	ID uniqueidentifier primary key default newid(),
-	Name varchar(10)
+	IsOpen bit not null,
+	[Name] varchar(10)
 )
 
 Create Table [Roulettes]
@@ -27,3 +28,8 @@ Create Table [Bets]
 	RouletteId uniqueidentifier not null foreign key references Roulettes(ID),
 	StateId uniqueidentifier not null foreign key references [Status](ID)
 )
+
+INSERT INTO [Status] (ID, [IsOpen], [Name])
+VALUES
+	('42290071-BD11-4089-9483-45612311FF52', 1, 'Open'),
+	('D38D2437-92B8-4C0C-BDE3-8C1029403F03', 0, 'Close');
